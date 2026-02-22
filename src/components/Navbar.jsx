@@ -4,7 +4,7 @@ import styles from './Navbar.module.css';
 export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery, scrolled }) {
   return (
     <nav className={`${styles.nav} ${scrolled ? styles.solid : ''}`}>
-      <div className={styles.logo} onClick={() => setTab('home')}>FILMLIB</div>
+      <div className={styles.logo} onClick={() => setTab('home')}>MEGFLIX</div>
 
       <div className={styles.tabs}>
         {[
