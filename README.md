@@ -1,66 +1,48 @@
-# 🎬 FilmLib Frontend
+# 🎬 MovieLibraryFrontend
 
-Netflix-inspirerad frontend till MovieLibraryApi skoluppgift.
+Netflix-inspirerad frontend till MovieLibraryApi byggd med React + Vite.
+
+## Tekniker
+- React 18
+- Vite
+- CSS Modules
+- TMDB API
 
 ## Kom igång
 
-### 1. Installera beroenden
+### Krav
+- Node.js 18+
+- MovieLibraryApi körs lokalt
+
+### Installation
 ```bash
-cd movie-frontend
 npm install
 ```
 
-### 2. Lägg in din TMDB API-nyckel
-Öppna `src/api/index.js` och byt ut:
+### Konfigurera
+Öppna `src/api/index.js` och lägg in din TMDB API-nyckel:
 ```js
 const TMDB_KEY = 'DIN_TMDB_API_NYCKEL';
 ```
 Skaffa gratis nyckel på: https://www.themoviedb.org/settings/api
 
-### 3. Kontrollera backend-porten
-Öppna `vite.config.js` – om din backend kör på annan port än 7000, byt:
-```js
-target: 'https://localhost:7000',
-```
-
-### 4. Starta båda samtidigt
-
-**Terminal 1 – Backend:**
+### Starta
 ```bash
+# Terminal 1 – Backend
 cd MovieLibraryApi
 dotnet run
-```
 
-**Terminal 2 – Frontend:**
-```bash
-cd movie-frontend
+# Terminal 2 – Frontend
 npm run dev
 ```
 
 Öppna: http://localhost:5173
 
----
-
 ## Funktioner
-
-- 🎬 Netflix-liknande hero med TMDB-bilder
+- 🎬 Netflix-liknande design med hero, rader och kort
 - 🔍 Sök bland alla TMDB-filmer live
-- ➕ Lägg till filmer i din lista (ingen dubblett möjlig)
-- ⭐ 5-stjärniga recensioner (sparas i din backend)
+- ➕ Lägg till filmer i din lista
+- ✓ Duplikat-skydd – kan inte lägga till samma film två gånger
+- ⭐ Skriv recensioner med 1-5 stjärnor
 - ✏️ Redigera och ta bort recensioner
-- ✏️ Redigera filmdetaljer
-- 🗑 Ta bort film + alla recensioner
-- ✓ Indikator om en film redan är i din lista
-
-## API-koppling
-
-| Action | Endpoint |
-|--------|---------|
-| Hämta filmer | GET /api/Movies |
-| Lägg till film | POST /api/Movies |
-| Uppdatera film | PUT /api/Movies/{id} |
-| Ta bort film | DELETE /api/Movies/{id} |
-| Hämta recensioner | GET /api/Reviews |
-| Skapa recension | POST /api/Reviews |
-| Uppdatera recension | PUT /api/Reviews/{id} |
-| Ta bort recension | DELETE /api/Reviews/{id} |
+- 🗑 Ta bort filmer från listan
