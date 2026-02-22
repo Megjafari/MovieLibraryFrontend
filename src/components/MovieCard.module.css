@@ -1,0 +1,119 @@
+.card {
+  position: relative;
+  flex-shrink: 0;
+  width: 158px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--surface2);
+  transition: transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.28s;
+  will-change: transform;
+}
+.card:hover {
+  transform: scale(1.09);
+  z-index: 20;
+  box-shadow: 0 16px 50px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+
+.noPoster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: var(--surface3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+  padding: 12px;
+}
+.noPoster span {
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.inListBadge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  background: rgba(229,9,20,0.92);
+  color: white;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.97) 0%,
+    rgba(0,0,0,0.4)  45%,
+    transparent      75%
+  );
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.card:hover .overlay { opacity: 1; }
+
+.overlayTitle {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overlayMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.stars {
+  color: var(--gold);
+  font-size: 0.68rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 1px;
+}
+.stars em { font-style: normal; color: var(--muted); font-size: 0.62rem; }
+
+.tmdbScore {
+  color: var(--gold);
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 600;
+}
+
+.year {
+  color: var(--muted);
+  font-size: 0.68rem;
+  margin-left: auto;
+}
