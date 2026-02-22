@@ -19,7 +19,7 @@ export const backendApi = {
 
 // ─── TMDB ──────────────────────────────────────────────────────────────────────
 // Skaffa gratis API-nyckel på: https://www.themoviedb.org/settings/api
-const TMDB_KEY  = '5adbc6d55666919f1d6104c1293a5486';
+const TMDB_KEY = import.meta.env.VITE_TMDB_KEY;
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
 export const TMDB_IMG_W500    = 'https://image.tmdb.org/t/p/w500';
