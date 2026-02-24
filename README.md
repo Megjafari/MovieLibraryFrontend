@@ -1,36 +1,36 @@
-# 🎬 MovieLibraryFrontend
+# 🎬 Megflix
 
-Netflix-inspirerad frontend till MovieLibraryApi byggd med React + Vite.
+Netflix-inspired frontend for MovieLibraryApi built with React + Vite.
 
-## Tekniker
+## Tech Stack
 - React 18
 - Vite
 - CSS Modules
 - TMDB API
 
 ## Backend
-Detta projekt kräver att backend körs lokalt:
+This project requires the backend to be running locally:
 [MovieLibraryApi](https://github.com/Megjafari/MovieLibraryApi)
 
-## Kom igång
+## Getting Started
 
-### Krav
+### Requirements
 - Node.js 18+
-- MovieLibraryApi körs lokalt
+- MovieLibraryApi running locally
 
 ### Installation
 ```bash
 npm install
 ```
 
-### Konfigurera
-Öppna `src/api/index.js` och lägg in din TMDB API-nyckel:
-```js
-const TMDB_KEY = 'DIN_TMDB_API_NYCKEL';
+### Configure
+1. Copy `.env.example` to `.env`
+2. Add your TMDB API key from https://www.themoviedb.org/settings/api
+```env
+VITE_TMDB_KEY=your_tmdb_api_key_here
 ```
-Skaffa gratis nyckel på: https://www.themoviedb.org/settings/api
 
-### Starta
+### Start
 ```bash
 # Terminal 1 – Backend
 cd MovieLibraryApi
@@ -40,19 +40,18 @@ dotnet run
 npm run dev
 ```
 
-Öppna: http://localhost:5173
+Open: http://localhost:5173
 
-## Funktioner
-- 🎬 Netflix-liknande design med hero, rader och kort
-- 🔍 Sök bland alla TMDB-filmer live
-- ➕ Lägg till filmer i din lista
-- ✓ Duplikat-skydd – kan inte lägga till samma film två gånger
-- ⭐ Skriv recensioner med 1-5 stjärnor
-- ✏️ Redigera och ta bort recensioner
-- 🗑 Ta bort filmer från listan
+## Features
+- 🎬 Netflix-style design with hero, rows and cards
+- 🔍 Search all TMDB movies live
+- ➕ Add movies to your list
+- ✓ Duplicate protection – can't add the same movie twice
+- ⭐ Write reviews with 1-5 stars
+- ✏️ Edit and delete reviews
+- 🗑 Remove movies from your list
 
 ## Screenshots
 
-### Min lista
-<img width="800" alt="Screenshot 2026-02-22 163857" src="https://github.com/user-attachments/assets/a514a031-086c-4145-aac3-76d37015109f" />
-
+### My List
+<img width="800" alt="Megflix My List" src="https://github.com/user-attachments/assets/a514a031-086c-4145-aac3-76d37015109f" />
