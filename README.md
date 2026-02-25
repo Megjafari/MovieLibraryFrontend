@@ -1,57 +1,42 @@
-# 🎬 Megflix
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-Netflix-inspired frontend for MovieLibraryApi built with React + Vite.
+
+
+
+# MegFlix 🎬
+
+A fullstack movie review application where you can discover movies and share your thoughts.
+
+**Live demo:** https://megflix.vercel.app/
 
 ## Tech Stack
-- React 18
-- Vite
-- CSS Modules
-- TMDB API
 
-## Backend
-This project requires the backend to be running locally:
-[MovieLibraryApi](https://github.com/Megjafari/MovieLibraryApi)
+- React + Vite
+- TMDB API for movie data and images
+- Deployed on Vercel
+
+## Features
+
+- Browse trending, popular and top rated movies
+- Search for movies
+- Add and manage reviews
+- Connected to MegFlix backend API
 
 ## Getting Started
 
-### Requirements
-- Node.js 18+
-- MovieLibraryApi running locally
-
-### Installation
-```bash
-npm install
+1. Clone the repo
+2. Create `.env` with:
 ```
-
-### Configure
-1. Copy `.env.example` to `.env`
-2. Add your TMDB API key from https://www.themoviedb.org/settings/api
-```env
-VITE_TMDB_KEY=your_tmdb_api_key_here
+VITE_TMDB_KEY=your-tmdb-api-key
+VITE_API_URL=your-backend-url
 ```
+3. Run `npm install && npm run dev`
 
-### Start
-```bash
-# Terminal 1 – Backend
-cd MovieLibraryApi
-dotnet run
+> **Note:** The live demo may take 30-60 seconds to load on first visit as the free tier spins down after inactivity.
 
-# Terminal 2 – Frontend
-npm run dev
-```
+## Related
 
-Open: http://localhost:5173
-
-## Features
-- 🎬 Netflix-style design with hero, rows and cards
-- 🔍 Search all TMDB movies live
-- ➕ Add movies to your list
-- ✓ Duplicate protection – can't add the same movie twice
-- ⭐ Write reviews with 1-5 stars
-- ✏️ Edit and delete reviews
-- 🗑 Remove movies from your list
-
-## Screenshots
-
-### My List
-<img width="800" alt="Megflix My List" src="https://github.com/user-attachments/assets/a514a031-086c-4145-aac3-76d37015109f" />
+- [MegFlix Backend](https://github.com/Megjafari/MovieLibraryApi)
