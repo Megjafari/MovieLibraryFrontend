@@ -9,12 +9,52 @@ import EditMovieModal from './components/EditMovieModal.jsx';
 import Toast         from './components/Toast.jsx';
 import styles        from './App.module.css';
 
+
+const GENRES = [
+  { id: 28, name: 'Action' },
+  { id: 12, name: 'Adventure' },
+  { id: 16, name: 'Animation' },
+  { id: 35, name: 'Comedy' },
+  { id: 80, name: 'Crime' },
+  { id: 99, name: 'Documentary' },
+  { id: 18, name: 'Drama' },
+  { id: 14, name: 'Fantasy' },
+  { id: 27, name: 'Horror' },
+  { id: 9648, name: 'Mystery' },
+  { id: 10749, name: 'Romance' },
+  { id: 878, name: 'Sci-Fi' },
+  { id: 53, name: 'Thriller' },
+  { id: 10752, name: 'War' },
+];
+
 const normalizeTitle = t => t?.toLowerCase().trim() ?? '';
 
 export default function App() {
   const [tab, setTab]                   = useState('home');
   const [scrolled, setScrolled]         = useState(false);
   const [searchQuery, setSearchQuery]   = useState('');
+
+
+  const [activeGenre, setActiveGenre] = useState(null);
+  const [genreMovies, setGenreMovies] = useState([]);
+  const [loadingGenre, setLoadingGenre] = useState(false);
+
+  const handleGenreSelect = async (genreId) => {
+  setActiveGenre(genreId);
+  if (!genreId) return;
+  setLoadingGenre(true);
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&with_genres=${genreId}&sort_by=popularity.desc`
+    );
+    const data = await res.json();
+    setGenreMovies(data.results || []);
+  } catch {
+    setGenreMovies([]);
+  }
+  setLoadingGenre(false);
+};
+
 
   const [myMovies,  setMyMovies]        = useState([]);
   const [reviews,   setReviews]         = useState([]);
@@ -217,13 +257,15 @@ export default function App() {
 
   return (
     <div>
-      <Navbar
-        activeTab={tab}
-        setTab={t => { setTab(t); if (t !== 'search') setSearchQuery(''); }}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        scrolled={scrolled}
-      />
+        <Navbar
+          activeTab={tab}
+          setTab={t => { setTab(t); if (t !== 'search') setSearchQuery(''); }}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          scrolled={scrolled}
+          onGenreSelect={handleGenreSelect}
+          activeGenre={activeGenre}
+        />
 
       {tab === 'home' && (
         <>
@@ -406,6 +448,40 @@ export default function App() {
           )}
         </div>
       )}
+
+
+          {tab === 'genre' && (
+      <div className={styles.page}>
+        <div className={styles.pageHeader}>
+          <h1 className={styles.pageTitle}>
+            {GENRES.find(g => g.id === activeGenre)?.name?.toUpperCase()}
+          </h1>
+          <span className={styles.pageCount}>{genreMovies.length} movies</span>
+        </div>
+        {loadingGenre ? (
+          <div className={styles.loadingCenter}><span className={styles.spinner} /></div>
+        ) : (
+          <div className={styles.grid}>
+            {genreMovies.map(m => {
+              const isInList = myTitleSet.has(normalizeTitle(m.title));
+              const be = isInList ? myMovies.find(mv => normalizeTitle(mv.title) === normalizeTitle(m.title)) : null;
+              const revs = be ? reviews.filter(r => r.movieId === be.id) : [];
+              const avg = revs.length ? Math.round(revs.reduce((s,r) => s+r.rating,0)/revs.length) : 0;
+              return (
+                <MovieCard
+                  key={m.id}
+                  movie={m}
+                  isInList={isInList}
+                  reviewCount={revs.length}
+                  avgRating={avg}
+                  onClick={openMovie}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    )}
 
       {(selectedTmdb || selectedBackend) && (
         <MovieModal
