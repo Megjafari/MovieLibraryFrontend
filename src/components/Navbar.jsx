@@ -39,6 +39,7 @@ export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery,
       <div className={styles.tabs}>
         {[
           ['home', 'Home'],
+          ['series', 'Series'],
           ['movies', 'My List'],
           ['reviews', 'Reviews'],
         ].map(([id, label]) => (

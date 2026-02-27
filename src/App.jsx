@@ -70,6 +70,10 @@ export default function App() {
   const [tmdbTopRated, setTmdbTopRated] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
+  const [tmdbTrendingTv, setTmdbTrendingTv] = useState([]);
+  const [tmdbPopularTv, setTmdbPopularTv] = useState([]);
+  const [tmdbTopRatedTv, setTmdbTopRatedTv] = useState([]);
+
   const [tmdbCache, setTmdbCache]       = useState({});
 
   const [selectedTmdb,    setSelectedTmdb]    = useState(null);
@@ -124,14 +128,20 @@ export default function App() {
 
   const loadTmdbRows = async () => {
     try {
-      const [tr, po, top] = await Promise.all([
+      const [tr, po, top, trTv, poTv, topTv] = await Promise.all([
         tmdbApi.trending(),
         tmdbApi.popular(),
         tmdbApi.topRated(),
+        tmdbApi.trendingTv(),
+        tmdbApi.popularTv(),
+        tmdbApi.topRatedTv(),
       ]);
       setTmdbTrending(tr.results  || []);
       setTmdbPopular( po.results  || []);
       setTmdbTopRated(top.results || []);
+      setTmdbTrendingTv(trTv.results || []);
+      setTmdbPopularTv(poTv.results  || []);
+      setTmdbTopRatedTv(topTv.results || []);
     } catch {}
   };
 
@@ -190,14 +200,14 @@ export default function App() {
     }
     const key = normalizeTitle(tmdbMovie.title);
     if (myTitleSet.has(key)) {
-      showToast('⚠️ Movie already in your list!', 'error');
+      showToast('⚠️ Already in your list!', 'error');
       return;
     }
     try {
       const body = {
         title:       tmdbMovie.title,
         description: tmdbMovie.overview || '',
-        releaseDate: tmdbMovie.release_date || null,
+        releaseDate: tmdbMovie.release_date || tmdbMovie.first_air_date || null,
       };
       const created = await backendApi.createMovie(body);
       await backendApi.addToWatchlist(created.id, token);
@@ -501,6 +511,43 @@ const handleDeleteReview = async (id) => {
         )}
       </div>
     )}
+
+    {tab === 'series' && (
+    <>
+    <Hero
+      tmdbMovie={tmdbTrendingTv[0] ? { ...tmdbTrendingTv[0], title: tmdbTrendingTv[0].name } : null}
+      backendMovie={null}
+      reviews={reviews}
+      isInList={false}
+      onWatch={(m) => openMovie({ ...m, title: m.name || m.title })}
+      onAdd={(m) => handleAddToList({ ...m, title: m.name || m.title })}
+    />
+
+    <MovieRow
+      title="🔥 TRENDING SERIES"
+      movies={tmdbTrendingTv.slice(0, 14).map(m => ({ ...m, title: m.name || m.title }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openMovie({ ...m, title: m.name || m.title })}
+    />
+
+    <MovieRow
+      title="POPULAR SERIES"
+      movies={tmdbPopularTv.slice(0, 14).map(m => ({ ...m, title: m.name || m.title }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openMovie({ ...m, title: m.name || m.title })}
+    />
+
+    <MovieRow
+      title="TOP RATED SERIES"
+      movies={tmdbTopRatedTv.slice(0, 14).map(m => ({ ...m, title: m.name || m.title }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openMovie({ ...m, title: m.name || m.title })}
+          />
+        </>
+      )}
 
       {(selectedTmdb || selectedBackend) && (
         <MovieModal

@@ -38,4 +38,10 @@ export const tmdbApi = {
   topRated: ()   => tmdbFetch('/movie/top_rated'),
   details:  (id) => tmdbFetch(`/movie/${id}`),
   search:   (q)  => fetch(`${TMDB_BASE}/search/movie?api_key=${TMDB_KEY}&language=en-US&query=${encodeURIComponent(q)}`).then(r => r.json()),
+
+  trendingTv:  ()   => tmdbFetch('/trending/tv/week'),
+  popularTv:   ()   => tmdbFetch('/tv/popular'),
+  topRatedTv:  ()   => tmdbFetch('/tv/top_rated'),
+  detailsTv:   (id) => tmdbFetch(`/tv/${id}`),
+  searchTv:    (q)  => fetch(`${TMDB_BASE}/search/tv?api_key=${TMDB_KEY}&language=en-US&query=${encodeURIComponent(q)}`).then(r => r.json()),
 };
