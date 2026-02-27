@@ -10,10 +10,10 @@ export const backendApi = {
   deleteMovie: (id)      => fetch(`${BACKEND_URL}/api/Movies/${id}`, { method:'DELETE' }).then(r => { if (!r.ok) throw r; }),
 
   // Reviews
-  getReviews:   ()        => fetch(`${BACKEND_URL}/api/Reviews`).then(r => { if (!r.ok) throw r; return r.json(); }),
-  createReview: (body)    => fetch(`${BACKEND_URL}/api/Reviews`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(async r => { if (!r.ok) throw r; const text = await r.text(); return text ? JSON.parse(text) : {}; }),
-  updateReview: (id,body) => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(r => { if (!r.ok) throw r; }),
-  deleteReview: (id)      => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'DELETE' }).then(r => { if (!r.ok) throw r; }),
+  getReviews: (token) => fetch(`${BACKEND_URL}/api/Reviews`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }).then(r => { if (!r.ok) throw r; return r.json(); }),
+  createReview: (body, token)    => fetch(`${BACKEND_URL}/api/Reviews`, { method:'POST', headers:{'Content-Type':'application/json', Authorization: `Bearer ${token}`}, body: JSON.stringify(body) }).then(async r => { if (!r.ok) throw r; const text = await r.text(); return text ? JSON.parse(text) : {}; }),
+  updateReview: (id, body, token) => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'PUT', headers:{'Content-Type':'application/json', Authorization: `Bearer ${token}`}, body: JSON.stringify(body) }).then(r => { if (!r.ok) throw r; }),
+  deleteReview: (id, token)      => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'DELETE', headers:{ Authorization: `Bearer ${token}`} }).then(r => { if (!r.ok) throw r; }),
 
   // Watchlist
   getWatchlist:        (token)          => fetch(`${BACKEND_URL}/api/watchlist`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw r; return r.json(); }),

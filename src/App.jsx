@@ -101,26 +101,26 @@ export default function App() {
   useEffect(() => { loadBackend(); }, [token]);
   useEffect(() => { loadTmdbRows(); }, []);
 
-const loadBackend = async () => {
-  if (!token) {
-    setMyMovies([]);
-    setReviews([]);
+  const loadBackend = async () => {
+    if (!token) {
+      setMyMovies([]);
+      setReviews([]);
+      setLoadingBackend(false);
+      return;
+    }
+    setLoadingBackend(true);
+    try {
+      const [movs, revs] = await Promise.all([
+        backendApi.getWatchlist(token),
+        backendApi.getReviews(token),
+      ]);
+      setMyMovies(movs);
+      setReviews(revs);
+    } catch {
+      showToast('⚠️ Could not reach backend.', 'error');
+    }
     setLoadingBackend(false);
-    return;
-  }
-  setLoadingBackend(true);
-  try {
-    const [movs, revs] = await Promise.all([
-      backendApi.getWatchlist(token),
-      backendApi.getReviews(),
-    ]);
-    setMyMovies(movs);
-    setReviews(revs);
-  } catch {
-    showToast('⚠️ Could not reach backend.', 'error');
-  }
-  setLoadingBackend(false);
-};
+  };
 
   const loadTmdbRows = async () => {
     try {
@@ -227,29 +227,29 @@ const loadBackend = async () => {
   };
 
   const handleCreateReview = async (data) => {
-    try {
-      const created = await backendApi.createReview(data);
-      setReviews(prev => [...prev, created]);
-      showToast('⭐ Review published!', 'success');
-    } catch { showToast('❌ Could not save review', 'error'); }
-  };
+  try {
+    const created = await backendApi.createReview(data, token);
+    setReviews(prev => [...prev, created]);
+    showToast('⭐ Review published!', 'success');
+  } catch { showToast('❌ Could not save review', 'error'); }
+};
 
-  const handleUpdateReview = async (id, data) => {
-    try {
-      await backendApi.updateReview(id, data);
-      setReviews(prev => prev.map(r => r.id === id ? { ...r, ...data } : r));
-      showToast('✅ Review updated!', 'success');
-    } catch { showToast('❌ Could not update review', 'error'); }
-  };
+const handleUpdateReview = async (id, data) => {
+  try {
+    await backendApi.updateReview(id, data, token);
+    setReviews(prev => prev.map(r => r.id === id ? { ...r, ...data } : r));
+    showToast('✅ Review updated!', 'success');
+  } catch { showToast('❌ Could not update review', 'error'); }
+};
 
-  const handleDeleteReview = async (id) => {
-    if (!window.confirm('Delete this review?')) return;
-    try {
-      await backendApi.deleteReview(id);
-      setReviews(prev => prev.filter(r => r.id !== id));
-      showToast('🗑 Review deleted');
-    } catch { showToast('❌ Could not delete review', 'error'); }
-  };
+const handleDeleteReview = async (id) => {
+  if (!window.confirm('Delete this review?')) return;
+  try {
+    await backendApi.deleteReview(id, token);
+    setReviews(prev => prev.filter(r => r.id !== id));
+    showToast('🗑 Review deleted');
+  } catch { showToast('❌ Could not delete review', 'error'); }
+};
 
   const heroTmdb    = tmdbTrending[0] || null;
   const heroBackend = heroTmdb ? myMovies.find(m => normalizeTitle(m.title) === normalizeTitle(heroTmdb?.title)) : null;
