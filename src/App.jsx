@@ -9,6 +9,11 @@ import EditMovieModal from './components/EditMovieModal.jsx';
 import Toast         from './components/Toast.jsx';
 import styles        from './App.module.css';
 
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import { useAuth } from './context/AuthContext.jsx';
+
+
 
 const GENRES = [
   { id: 28, name: 'Action' },
@@ -31,6 +36,7 @@ const normalizeTitle = t => t?.toLowerCase().trim() ?? '';
 
 export default function App() {
   const [tab, setTab]                   = useState('home');
+  const { token, logout } = useAuth();
   const [scrolled, setScrolled]         = useState(false);
   const [searchQuery, setSearchQuery]   = useState('');
 
@@ -92,23 +98,29 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => { loadBackend(); }, []);
+  useEffect(() => { loadBackend(); }, [token]);
   useEffect(() => { loadTmdbRows(); }, []);
 
-  const loadBackend = async () => {
-    setLoadingBackend(true);
-    try {
-      const [movs, revs] = await Promise.all([
-        backendApi.getMovies(),
-        backendApi.getReviews(),
-      ]);
-      setMyMovies(movs);
-      setReviews(revs);
-    } catch {
-      showToast('⚠️ Could not reach backend.', 'error');
-    }
+const loadBackend = async () => {
+  if (!token) {
+    setMyMovies([]);
+    setReviews([]);
     setLoadingBackend(false);
-  };
+    return;
+  }
+  setLoadingBackend(true);
+  try {
+    const [movs, revs] = await Promise.all([
+      backendApi.getWatchlist(token),
+      backendApi.getReviews(),
+    ]);
+    setMyMovies(movs);
+    setReviews(revs);
+  } catch {
+    showToast('⚠️ Could not reach backend.', 'error');
+  }
+  setLoadingBackend(false);
+};
 
   const loadTmdbRows = async () => {
     try {
@@ -172,6 +184,10 @@ export default function App() {
   const closeModal = () => { setSelectedTmdb(null); setSelectedBackend(null); };
 
   const handleAddToList = async (tmdbMovie) => {
+    if (!token) {
+      showToast('⚠️ You must be logged in to add movies!', 'error');
+      return;
+    }
     const key = normalizeTitle(tmdbMovie.title);
     if (myTitleSet.has(key)) {
       showToast('⚠️ Movie already in your list!', 'error');
@@ -184,6 +200,7 @@ export default function App() {
         releaseDate: tmdbMovie.release_date || null,
       };
       const created = await backendApi.createMovie(body);
+      await backendApi.addToWatchlist(created.id, token);
       setMyMovies(prev => [...prev, created]);
       setSelectedBackend(created);
       showToast('✅ Added to your list!', 'success');
@@ -199,11 +216,11 @@ export default function App() {
   };
 
   const handleDeleteFromList = async (id) => {
-    if (!window.confirm('Remove movie and all its reviews?')) return;
+    if (!window.confirm('Remove movie from your list?')) return;
     try {
-      await backendApi.deleteMovie(id);
+      await backendApi.removeFromWatchlist(id, token);
       setMyMovies(prev => prev.filter(m => m.id !== id));
-      setReviews(prev  => prev.filter(r => r.movieId !== id));
+      setReviews(prev => prev.filter(r => r.movieId !== id));
       closeModal();
       showToast('🗑 Movie removed');
     } catch { showToast('❌ Could not remove', 'error'); }
@@ -265,6 +282,8 @@ export default function App() {
           scrolled={scrolled}
           onGenreSelect={handleGenreSelect}
           activeGenre={activeGenre}
+          token={token}
+          logout={logout}
         />
 
       {tab === 'home' && (
@@ -508,6 +527,10 @@ export default function App() {
       )}
 
       {toast && <Toast message={toast.message} type={toast.type} />}
+
+      {tab === 'login' && <Login setTab={setTab} />}
+      {tab === 'register' && <Register setTab={setTab} />}
+
     </div>
   );
 }

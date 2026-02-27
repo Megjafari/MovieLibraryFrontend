@@ -14,6 +14,11 @@ export const backendApi = {
   createReview: (body)    => fetch(`${BACKEND_URL}/api/Reviews`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(async r => { if (!r.ok) throw r; const text = await r.text(); return text ? JSON.parse(text) : {}; }),
   updateReview: (id,body) => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(r => { if (!r.ok) throw r; }),
   deleteReview: (id)      => fetch(`${BACKEND_URL}/api/Reviews/${id}`, { method:'DELETE' }).then(r => { if (!r.ok) throw r; }),
+
+  // Watchlist
+  getWatchlist:        (token)          => fetch(`${BACKEND_URL}/api/watchlist`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw r; return r.json(); }),
+  addToWatchlist:      (movieId, token) => fetch(`${BACKEND_URL}/api/watchlist/${movieId}`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw r; }),
+  removeFromWatchlist: (movieId, token) => fetch(`${BACKEND_URL}/api/watchlist/${movieId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw r; }),
 };
 
 // ─── TMDB ──────────────────────────────────────────────────────────────────────

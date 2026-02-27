@@ -18,7 +18,7 @@ const GENRES = [
   { id: 10752, name: 'War' },
 ];
 
-export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery, scrolled, onGenreSelect, activeGenre }) {
+export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery, scrolled, onGenreSelect, activeGenre, token, logout }) {
   const [genreOpen, setGenreOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -96,6 +96,15 @@ export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery,
             }}
           />
         </div>
+
+        {token ? (
+          <button className={styles.tab} onClick={logout}>Logout</button>
+        ) : (
+          <>
+            <button className={`${styles.tab} ${activeTab === 'login' ? styles.active : ''}`} onClick={() => setTab('login')}>Login</button>
+            <button className={`${styles.tab} ${activeTab === 'register' ? styles.active : ''}`} onClick={() => setTab('register')}>Register</button>
+          </>
+        )}
       </div>
     </nav>
   );
