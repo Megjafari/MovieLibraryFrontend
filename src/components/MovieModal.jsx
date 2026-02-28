@@ -138,9 +138,6 @@ export default function MovieModal({
                 {'★'.repeat(Math.round(avgRating))} {avgRating}/5 ({movieReviews.length})
               </span>
             )}
-            {tmdbMovie?.genres?.map(g => (
-              <span key={g.id} className={styles.genre}>{g.name}</span>
-            ))}
           </div>
 
           {overview && <p className={styles.overview}>{overview}</p>}
