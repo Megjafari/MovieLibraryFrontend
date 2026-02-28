@@ -40,6 +40,7 @@ export default function Navbar({ activeTab, setTab, searchQuery, setSearchQuery,
         {[
           ['home', 'Home'],
           ['series', 'Series'],
+          ['anime', 'Anime'],
           ['movies', 'My List'],
           ['reviews', 'Reviews'],
         ].map(([id, label]) => (

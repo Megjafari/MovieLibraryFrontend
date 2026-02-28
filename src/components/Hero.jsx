@@ -8,6 +8,8 @@ export default function Hero({ tmdbMovie, backendMovie, reviews, onWatch, onAdd,
     ? `${TMDB_IMG_ORIG}${tmdbMovie.backdrop_path}`
     : tmdbMovie.poster_path
     ? `${TMDB_IMG_W500}${tmdbMovie.poster_path}`
+      : tmdbMovie._jikanImage
+      ? tmdbMovie._jikanImage
     : null;
 
   const year = tmdbMovie.release_date?.slice(0, 4);

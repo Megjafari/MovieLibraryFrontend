@@ -45,3 +45,14 @@ export const tmdbApi = {
   detailsTv:   (id) => tmdbFetch(`/tv/${id}`),
   searchTv:    (q)  => fetch(`${TMDB_BASE}/search/tv?api_key=${TMDB_KEY}&language=en-US&query=${encodeURIComponent(q)}`).then(r => r.json()),
 };
+
+// ─── JIKAN (ANIME) ──────────────────────────────────────────────────────────
+const JIKAN_BASE = 'https://api.jikan.moe/v4';
+
+export const jikanApi = {
+  trending:  () => fetch(`${JIKAN_BASE}/top/anime?filter=airing`).then(r => r.json()),
+  popular:   () => fetch(`${JIKAN_BASE}/top/anime?filter=bypopularity`).then(r => r.json()),
+  topRated:  () => fetch(`${JIKAN_BASE}/top/anime`).then(r => r.json()),
+  search:    (q) => fetch(`${JIKAN_BASE}/anime?q=${encodeURIComponent(q)}`).then(r => r.json()),
+  details:   (id) => fetch(`${JIKAN_BASE}/anime/${id}`).then(r => r.json()),
+};

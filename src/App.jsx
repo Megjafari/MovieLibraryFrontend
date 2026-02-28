@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { backendApi, tmdbApi, TMDB_IMG_W500 } from './api/index.js';
+import { backendApi, tmdbApi, jikanApi, TMDB_IMG_W500 } from './api/index.js';
 import Navbar        from './components/Navbar.jsx';
 import Hero          from './components/Hero.jsx';
 import MovieRow      from './components/MovieRow.jsx';
@@ -60,7 +60,10 @@ export default function App() {
   }
   setLoadingGenre(false);
 };
-
+    //anime
+  const [jikanTrending, setJikanTrending] = useState([]);
+  const [jikanPopular, setJikanPopular] = useState([]);
+  const [jikanTopRated, setJikanTopRated] = useState([]);
 
   const [myMovies,  setMyMovies]        = useState([]);
   const [reviews,   setReviews]         = useState([]);
@@ -104,6 +107,7 @@ export default function App() {
 
   useEffect(() => { loadBackend(); }, [token]);
   useEffect(() => { loadTmdbRows(); }, []);
+  useEffect(() => { loadAnime(); }, []);
 
   const loadBackend = async () => {
     if (!token) {
@@ -144,6 +148,43 @@ export default function App() {
       setTmdbTopRatedTv(topTv.results || []);
     } catch {}
   };
+const loadAnime = async () => {
+  try {
+    const tr = await jikanApi.trending();
+    await new Promise(r => setTimeout(r, 1000));
+    const po = await jikanApi.popular();
+    await new Promise(r => setTimeout(r, 1000));
+    const top = await jikanApi.topRated();
+
+    const enrichWithTmdb = async (animeList) => {
+      return await Promise.all(
+        animeList.data.slice(0, 14).map(async (a) => {
+          try {
+            const res = await tmdbApi.searchTv(a.title_english || a.title);
+            const match = res.results?.[0];
+            return {
+              ...a,
+              _tmdbBackdrop: match?.backdrop_path || null,
+              _tmdbPoster: match?.poster_path || null,
+            };
+          } catch {
+            return a;
+          }
+        })
+      );
+    };
+
+    const [enrichedTr, enrichedPo, enrichedTop] = await Promise.all([
+      enrichWithTmdb(tr),
+      enrichWithTmdb(po),
+      enrichWithTmdb(top),
+    ]);
+
+    setJikanTrending(enrichedTr);
+    setJikanPopular(enrichedPo);
+    setJikanTopRated(enrichedTop);
+  } catch {}
+};
 
   const enrichWithBackend = useCallback((tmdbList) =>
     tmdbList.map(t => {
@@ -189,6 +230,17 @@ export default function App() {
     }
     setSelectedTmdb(tmdbData || null);
     setSelectedBackend(beMovie);
+  };
+  const openAnime = (animeData) => {
+    setSelectedTmdb({
+      title: animeData.title,
+      overview: animeData.overview || animeData.synopsis,
+      poster_path: null,
+      backdrop_path: null,
+      _jikanImage: animeData._jikanImage,
+      vote_average: animeData.vote_average,
+    });
+    setSelectedBackend(null);
   };
 
   const closeModal = () => { setSelectedTmdb(null); setSelectedBackend(null); };
@@ -548,6 +600,68 @@ const handleDeleteReview = async (id) => {
           />
         </>
       )}
+      {tab === 'anime' && (
+    <>
+    <Hero
+      tmdbMovie={jikanTrending[0] ? {
+        title: jikanTrending[0].title,
+        overview: jikanTrending[0].synopsis,
+        backdrop_path: jikanTrending[0]._tmdbBackdrop || null,
+        poster_path: jikanTrending[0]._tmdbPoster || null,
+        _jikanImage: jikanTrending[0].images?.jpg?.large_image_url,
+      } : null}
+      backendMovie={null}
+      reviews={reviews}
+      isInList={false}
+      onWatch={(m) => openMovie(m)}
+      onAdd={(m) => handleAddToList(m)}
+    />
+    <MovieRow
+      title="🔥 CURRENTLY AIRING"
+      movies={jikanTrending.slice(0, 14).map(a => ({
+        id: a.mal_id,
+        title: a.title,
+        poster_path: null,
+        _jikanImage: a.images?.jpg?.large_image_url,
+        overview: a.synopsis,
+        vote_average: a.score,
+      }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openAnime(m)}
+    />
+
+    <MovieRow
+      title="MOST POPULAR ANIME"
+      movies={jikanPopular.slice(0, 14).map(a => ({
+        id: a.mal_id,
+        title: a.title,
+        poster_path: null,
+        _jikanImage: a.images?.jpg?.large_image_url,
+        overview: a.synopsis,
+        vote_average: a.score,
+      }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openAnime(m)} 
+    />
+
+    <MovieRow
+      title="⭐ TOP RATED ANIME"
+      movies={jikanTopRated.slice(0, 14).map(a => ({
+        id: a.mal_id,
+        title: a.title,
+        poster_path: null,
+        _jikanImage: a.images?.jpg?.large_image_url,
+        overview: a.synopsis,
+        vote_average: a.score,
+      }))}
+      myMovieTitles={myTitleSet}
+      reviews={reviews}
+      onCardClick={(m) => openAnime(m)}
+        />
+      </>
+    )}
 
       {(selectedTmdb || selectedBackend) && (
         <MovieModal

@@ -2,7 +2,7 @@ import { TMDB_IMG_W500 } from '../api/index.js';
 import styles from './MovieCard.module.css';
 
 export default function MovieCard({ movie, isInList, reviewCount, avgRating, onClick }) {
-  const poster  = movie.poster_path   ? `${TMDB_IMG_W500}${movie.poster_path}`   : null;
+  const poster = movie._jikanImage || (movie.poster_path ? `${TMDB_IMG_W500}${movie.poster_path}` : null);
   const title   = movie.title;
   const year    = (movie.release_date || movie.releaseDate || '')?.slice(0, 4);
   const tmdbRating = movie.vote_average?.toFixed(1);

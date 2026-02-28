@@ -86,6 +86,8 @@ export default function MovieModal({
     ? `${TMDB_IMG_ORIG}${tmdbMovie.backdrop_path}`
     : tmdbMovie?.poster_path
     ? `${TMDB_IMG_W500}${tmdbMovie.poster_path}`
+      : tmdbMovie?._jikanImage
+      ? tmdbMovie._jikanImage
     : null;
 
   const movieReviews = backendMovie ? reviews.filter(r => r.movieId === backendMovie.id) : [];
